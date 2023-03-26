@@ -5,7 +5,7 @@ import RouterLink from 'vue-router'
     <h3>Please click on the following posts to see its details</h3>
     <ul class="list-group">
       <li class="list-group-item list-group-item-action" v-for="post in posts">
-        <RouterLink :to="{name:'postDetail',params:{id:post.id}}">{{ post.title }}</RouterLink>
+        <RouterLink :to="{name:'postDetail',params:{id:post.id}}"><h3>{{ post.title }}</h3></RouterLink>
       </li>
     </ul>
    
