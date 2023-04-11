@@ -1,18 +1,37 @@
-const mysql      = require('mysql');
+const mysql      = require('mysql')
+const express = require("express")
+const util = require('util')
 require('dotenv').config()
 
-var connection = mysql.createConnection({
-  host     : process.env.DB_HOST_READ,
-  user     : process.env.DB_USERNAME,
-  password : process.env.DB_PASSWORD,
-  database : process.env.DB_DATABASE
+const app = express();
+app.use(express.json())
+
+
+async function getRecords(offset,limit){
+  var connection = mysql.createConnection({
+    host     : process.env.DB_HOST_READ,
+    user     : process.env.DB_USERNAME,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DB_DATABASE
+  });
+  const query = util.promisify(connection.query).bind(connection);
+
+
+  const rows = await query(`SELECT* from contacts limit ${offset},${limit}`);
+  return rows;
+}
+
+
+app.get("/contacts",async (req,res) => {
+  let limit = 10
+  let offset = 0
+
+  const rows = await getRecords(offset,limit);
+  res.send(rows)
+
 });
 
-
-
-connection.connect();
  
-connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results[0].solution);
-});
+
+
+app.listen(8080,() => console.log("Listening started"))
