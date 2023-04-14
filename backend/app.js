@@ -1,11 +1,12 @@
 const mysql      = require('mysql')
 const express = require("express")
+const cors = require("cors");
 const util = require('util')
 require('dotenv').config()
 
 const app = express();
 app.use(express.json())
-
+app.use(cors())
 
 async function getRecords(offset,limit){
   var connection = mysql.createConnection({
@@ -23,9 +24,11 @@ async function getRecords(offset,limit){
 
 
 app.get("/contacts",async (req,res) => {
-  let limit = 10
-  let offset = 0
+  
 
+  let {offset=0,limit=10} = req.query;
+
+  
   const rows = await getRecords(offset,limit);
   res.send(rows)
 
